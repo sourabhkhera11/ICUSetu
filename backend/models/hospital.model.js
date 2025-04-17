@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+// Importing the BedManagement model
+import BedManagement from "./bedManagement.js"; 
 //Creating hospital schema
 const hospitalSchema = new mongoose.Schema({
   hospitalName: {
@@ -109,6 +110,10 @@ const hospitalSchema = new mongoose.Schema({
     select: false,
   },
   isVerified: { type: Boolean, default: false },
+  bedManagementId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "BedManagement",
+  },
 });
 
 //hashing password before saving it to the database
@@ -128,7 +133,11 @@ hospitalSchema.methods.isValidPassword = async function (password) {
 //jwt works by signing a payload with a secret key
 hospitalSchema.methods.generateJWT = function () {
   return jwt.sign(
-    { email: this.email }, //This function creates (signs) a new JWT token.The data you embed inside the token.(payload)
+    {
+      _id: this._id, // ✅ Include hospitalId
+      email: this.email, // Still useful
+      role: "hospital",
+    }, //This function creates (signs) a new JWT token.The data you embed inside the token.(payload)
     process.env.JWT_SECRET,
     { expiresIn: "24h" }
   );

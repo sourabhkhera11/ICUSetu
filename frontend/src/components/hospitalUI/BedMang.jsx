@@ -1,9 +1,76 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import axios from "../../../config/axios";
+import FloorForm from "../bedsUI/FloorForm";
+import BedLayout from "../bedsUI/BedLayout";
+import hosid from "../../../utils/getHospitalId";
+import { toast } from "react-toastify";
 
-const BedMang = () => {
+const BedManagement = () => {
+  const hospitalId = hosid();
+  const [isVerified, setIsVerified] = useState(null);
+  const [hospitalData, setHospitalData] = useState(null);
+  const [layout, setLayout] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchProfile = async () => {
+    try {
+      const res = await axios.get("/hospitals/profile");
+      setIsVerified(res.data.isVerified);
+      setHospitalData(res.data);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to fetch profile");
+    }
+  };
+
+  const fetchLayout = async () => {
+    try {
+      const res = await axios.get(`/beds/${hospitalId}`);
+      setLayout(res.data.floors);
+    } catch (err) {
+      console.error("Error fetching layout", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+  useEffect(() => {
+    if (hospitalId && isVerified) {
+      fetchLayout();
+    }
+  }, [hospitalId, isVerified]);
+
+  if (isVerified === null) {
+    return <div className="text-center mt-10 text-lg">Loading...</div>;
+  }
+
+  if (!isVerified) {
+    return (
+      <div className="text-center mt-10 text-red-600 text-xl font-semibold">
+        You are not verified yet. Please contact admin for access.
+      </div>
+    );
+  }
+
   return (
-    <div>BedMang</div>
-  )
-}
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Bed Management</h1>
+      <FloorForm hospitalId={hospitalId} onUpdate={fetchLayout} />
+      {loading ? (
+        <p>Loading bed layout...</p>
+      ) : (
+        <BedLayout
+          hospitalId={hospitalId}
+          layout={layout}
+          onUpdate={fetchLayout}
+        />
+      )}
+    </div>
+  );
+};
 
-export default BedMang
+export default BedManagement;

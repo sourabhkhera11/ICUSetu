@@ -125,7 +125,7 @@ export const registerHospital = async (req, res) => {
     res.status(500).json({ message: "Internal server error." });
   }
 };
-//login a hospital or admin 
+//login a hospital or admin
 export const loginHospital = async (req, res) => {
   const { email, password, role } = req.body;
 
@@ -145,11 +145,11 @@ export const loginHospital = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(401).json({ message: "Invalid password" });
 
-    const token =await jwt.sign(
-        { email: user.email }, //This function creates (signs) a new JWT token.The data you embed inside the token.(payload)
-        process.env.JWT_SECRET,
-        { expiresIn: "24h" }
-      );;
+    const token = await jwt.sign(
+      { id: user._id, email: user.email }, //This function creates (signs) a new JWT token.The data you embed inside the token.(payload)
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
 
     res.status(200).json({
       message: "Login successful",
@@ -163,7 +163,7 @@ export const loginHospital = async (req, res) => {
     });
   } catch (err) {
     res.status(500).json({ message: "Login failed", error: err.message });
-  } 
+  }
 };
 //Fetch all hospital data
 export const getAllHospitals = async (req, res) => {
@@ -202,4 +202,3 @@ export const getHospitalProfile = async (req, res) => {
       .json({ message: "Error fetching profile", error: err.message });
   }
 };
-

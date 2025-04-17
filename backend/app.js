@@ -8,7 +8,7 @@ import connect from "./db/db.js";
 connect();
 
 import hospitalRoutes from "./routes/hospital.routes.js"
-
+import bedRoutes from "./routes/bedRoutes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 //middlewares
@@ -22,6 +22,7 @@ app.use(cookieParser());
 //To get the log of each request on the server
 app.use(morgan("dev"));
 app.use("/hospitals", hospitalRoutes);
+app.use("/beds", bedRoutes);
 app.use("/uploads", express.static("uploads"));
 //dumy route
 app.get("/", (req, res) => {
