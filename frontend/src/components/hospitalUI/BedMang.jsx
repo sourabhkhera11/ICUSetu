@@ -13,8 +13,12 @@ const BedManagement = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
     try {
-      const res = await axios.get("/hospitals/profile");
+      const res = await axios.get("/hospitals/profile",{
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setIsVerified(res.data.isVerified);
       setHospitalData(res.data);
     } catch (err) {
