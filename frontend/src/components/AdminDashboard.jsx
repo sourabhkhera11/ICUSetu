@@ -12,9 +12,9 @@ const AdminDashboard = () => {
 
   const fetchHospitals = async () => {
     const token = localStorage.getItem("token");
-    console.log("token at dashboard",token);
+    console.log("token at dashboard", token);
     try {
-      const res = await axios.get("http://localhost:3001/hospitals/getAll",{
+      const res = await axios.get("http://localhost:3001/hospitals/getAll", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setHospitals(res.data);
@@ -37,7 +37,7 @@ const AdminDashboard = () => {
 
   const handleVerify = async (id) => {
     try {
-      await axios.put(`/hospitals/verify/${id}`);
+      await axiosInstance.put(`/hospitals/verify/${id}`);
       toast.success("Hospital verified successfully!");
       fetchHospitals();
     } catch (err) {

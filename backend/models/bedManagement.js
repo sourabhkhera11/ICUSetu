@@ -1,6 +1,6 @@
 // models/bedManagement.js
 import mongoose from "mongoose";
-import hospitals from "./hospital.model.js"
+import hospital from "./hospital.model.js";
 const bedSchema = new mongoose.Schema({
   bedNumber: Number,
   isOccupied: { type: Boolean, default: false },
@@ -22,7 +22,7 @@ const floorSchema = new mongoose.Schema({
 const bedManagementSchema = new mongoose.Schema({
   hospital: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "hospitals",
+    ref: "hospital",
     required: true,
     unique: true,
   },

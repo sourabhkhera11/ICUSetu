@@ -1,6 +1,7 @@
 // controllers/hospitalController.js
 
 import hospitalModel from "../models/hospital.model.js";
+import BedManagement from "../models/bedManagement.js";
 import adminModel from "../models/admin.model.js";
 import { validationResult } from "express-validator";
 import bcrypt from "bcrypt";
@@ -200,5 +201,49 @@ export const getHospitalProfile = async (req, res) => {
     res
       .status(500)
       .json({ message: "Error fetching profile", error: err.message });
+  }
+};
+
+
+export const getVerifiedHospitalsWithBedInfo = async (req, res) => {
+  try {
+    // Get all verified hospitals
+    const hospitals = await hospitalModel.find({ isVerified: true });
+
+    // Fetch bed info for each hospital
+    const enrichedHospitals = await Promise.all(
+      hospitals.map(async (hospital) => {
+        const bedData = await BedManagement.findOne({ hospital: hospital._id });
+        // const lastup=bedData.lastUpdated || "Not updated yet"; 
+        let totalBeds = 0;
+        let totalAvailableBeds = 0;
+
+        if (bedData) {
+          bedData.floors.forEach((floor) => {
+            totalBeds += floor.beds.length;
+            totalAvailableBeds += floor.beds.filter(
+              (bed) => !bed.isOccupied
+            ).length;
+          });
+        }
+
+        return {
+          _id: hospital._id,
+          name: hospital.hospitalName,
+          email: hospital.email,
+          contact: hospital.contact,
+          hospitalType: hospital.hospitalType,
+          address: hospital.address,
+          state: hospital.state,
+          totalBeds,
+          totalAvailableBeds,
+        };
+      })
+    );
+
+    res.status(200).json(enrichedHospitals);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch hospital data." });
   }
 };

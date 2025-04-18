@@ -4,13 +4,21 @@ import FloorForm from "../bedsUI/FloorForm";
 import BedLayout from "../bedsUI/BedLayout";
 import hosid from "../../../utils/getHospitalId";
 import { toast } from "react-toastify";
-
 const BedManagement = () => {
   const hospitalId = hosid();
   const [isVerified, setIsVerified] = useState(null);
   const [hospitalData, setHospitalData] = useState(null);
   const [layout, setLayout] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const instanceCreated = async () => {
+      const hospitalId = hosid();
+      try {
+        await axios.post(`beds/init/${hospitalId}`);
+      } catch (err) {
+        console.error("Error fetching layout", err);
+      } 
+    };
 
   const fetchProfile = async () => {
     const token = localStorage.getItem("token");
@@ -43,11 +51,15 @@ const BedManagement = () => {
   }, []);
 
   useEffect(() => {
-    if (hospitalId && isVerified) {
-      fetchLayout();
+    const initLayout = async () => {
+      if (hospitalId && isVerified) {
+        await instanceCreated();
+        await fetchLayout();
+      };
     }
+    initLayout();
   }, [hospitalId, isVerified]);
-
+  
   if (isVerified === null) {
     return <div className="text-center mt-10 text-lg">Loading...</div>;
   }

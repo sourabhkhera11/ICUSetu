@@ -1,6 +1,5 @@
 // controllers/bedController.js
 import BedManagement from "../models/bedManagement.js";
-
 // INIT Beds
 export const initBeds = async (req, res) => {
   try {
@@ -34,6 +33,7 @@ export const initBeds = async (req, res) => {
 export const getBeds = async (req, res) => {
   try {
     const { hospitalId } = req.params;
+    console.log("Fetching beds for hospital:", hospitalId);
     const layout = await BedManagement.findOne({ hospital: hospitalId });
     res.status(200).json(layout);
   } catch (err) {

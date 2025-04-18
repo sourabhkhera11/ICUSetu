@@ -7,6 +7,7 @@ import {
   getAllHospitals,
   verifyHospital,
   getHospitalProfile,
+  getVerifiedHospitalsWithBedInfo,
 } from "../controllers/hospital.contoller.js";
 import { registerAdmin } from "../controllers/seedAdmin.js";
 import {authenticateHospital} from "../middleware/authMiddleware.js";
@@ -67,6 +68,7 @@ router.post(
 router.post("/login", loginHospital);
 router.post("/registerAdmin", registerAdmin);
 router.get("/getAll", authenticateAdmin, getAllHospitals);
+router.get("/verified-with-bedinfo", getVerifiedHospitalsWithBedInfo);
 router.put("/verify/:id", verifyHospital);
 router.get("/profile", authenticateHospital, getHospitalProfile);
 export default router;
