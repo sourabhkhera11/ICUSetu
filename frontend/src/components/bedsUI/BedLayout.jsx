@@ -2,9 +2,12 @@ import React, { useState } from "react";
 import Bed from "./Bed";
 import BedFormModal from "./BedFormModal";
 import PatientInfoModal from "./PatientInfoModal";
+import axios from "../../../config/axios";
+import getHospitalId from "../../../utils/getHospitalId";
+import { toast, Toaster } from "react-hot-toast";
 
 const BedLayout = ({ hospitalId, layout, onUpdate }) => {
-  const [activeBed, setActiveBed] = useState(null); // { floorIndex, bedIndex }
+  const [activeBed, setActiveBed] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -14,8 +17,24 @@ const BedLayout = ({ hospitalId, layout, onUpdate }) => {
     setActiveBed(null);
   };
 
+  const handleUpdateTimestamp = async () => {
+    const hospitalId = getHospitalId();
+    try {
+      await axios.put(`/beds/update/${hospitalId}`);
+      console.log("Last updated timestamp stored successfully!");
+      toast.success("Last updated timestamp stored successfully!");
+      onUpdate(); // optional: to refresh layout if needed
+    } catch (error) {
+      console.error("Error updating timestamp", error);
+      toast.error("Failed to update timestamp");
+    }
+  };
+
   return (
     <div className="space-y-5 relative z-0">
+      {/* Toast container (specific to this component) */}
+      <Toaster position="top-right" reverseOrder={false} />
+
       {layout.map((floor, fIndex) => (
         <div
           key={fIndex}
@@ -48,7 +67,6 @@ const BedLayout = ({ hospitalId, layout, onUpdate }) => {
         </div>
       ))}
 
-      {/* Central Modals */}
       {showForm && activeBed && (
         <BedFormModal
           hospitalId={hospitalId}
@@ -66,6 +84,15 @@ const BedLayout = ({ hospitalId, layout, onUpdate }) => {
           onClose={closeModals}
         />
       )}
+
+      <div className="pt-4 text-center">
+        <button
+          onClick={handleUpdateTimestamp}
+          className="bg-blue-600 text-white font-semibold px-6 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Update
+        </button>
+      </div>
     </div>
   );
 };

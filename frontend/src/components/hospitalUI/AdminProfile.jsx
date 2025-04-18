@@ -98,7 +98,7 @@ export default function AdminProfile() {
       {/* Payment Image */}
       {profile.adminID && (
         <>
-          <h3 className="mt-6 text-lg font-semibold">Payment Details</h3>
+          <h3 className="mt-6 text-lg font-semibold">Admin ID</h3>
           <div className="mt-2">
             <img
               src={profile.adminID}

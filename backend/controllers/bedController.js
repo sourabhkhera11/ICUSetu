@@ -95,3 +95,27 @@ export const updateArchitecture = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+export const updateLastUpdated = async (req, res) => {
+  try {
+    const { hospitalId } = req.params;
+
+    const updated = await BedManagement.findOneAndUpdate(
+      { hospital: hospitalId },
+      { lastUpdated: new Date() },
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Hospital bed data not found" });
+    }
+
+    res.status(200).json({
+      message: "Last updated timestamp set successfully",
+      lastUpdated: updated.lastUpdated,
+    });
+  } catch (error) {
+    console.error("Error updating lastUpdated:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

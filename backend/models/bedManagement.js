@@ -27,6 +27,10 @@ const bedManagementSchema = new mongoose.Schema({
     unique: true,
   },
   floors: [floorSchema],
+  lastUpdated: {
+    type: Date,
+    default: null,
+  },
 });
 
 export default mongoose.model("BedManagement", bedManagementSchema);
