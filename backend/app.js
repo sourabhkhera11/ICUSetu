@@ -5,9 +5,18 @@ import "dotenv/config.js";
 //for info of user accessing request
 import morgan from "morgan";
 //db connection
-import connect from "./db/db.js";
-connect();
-
+import dbConnect from "./db/db.js";
+//Best practice once db is connected now our server is ready to handle the requests
+dbConnect()
+  .then(() => {
+    console.log("Connected to DB");
+    app.listen(process.env.PORT || 3001, () => {
+      console.log(`Server is running on ${process.env.PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error(`Failed to connect to DB ${err}`);
+  });
 import hospitalRoutes from "./routes/hospital.routes.js";
 import bedRoutes from "./routes/bedRoutes.js";
 import cookieParser from "cookie-parser";
@@ -30,7 +39,7 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
-app.listen(process.env.PORT || 3001, () => {
-  console.log(`Server is running on ${process.env.PORT}`);
-});
+// app.listen(process.env.PORT || 3001, () => {
+//   console.log(`Server is running on ${process.env.PORT}`);
+// });
 export default app;
