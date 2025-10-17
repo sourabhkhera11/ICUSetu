@@ -1,13 +1,14 @@
 //Setting up the express
 import express from "express";
 const app = express();
+import "dotenv/config.js";
 //for info of user accessing request
 import morgan from "morgan";
 //db connection
 import connect from "./db/db.js";
 connect();
 
-import hospitalRoutes from "./routes/hospital.routes.js"
+import hospitalRoutes from "./routes/hospital.routes.js";
 import bedRoutes from "./routes/bedRoutes.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -29,4 +30,7 @@ app.get("/", (req, res) => {
   res.send("Hello World");
 });
 
+app.listen(process.env.PORT || 3001, () => {
+  console.log(`Server is running on ${process.env.PORT}`);
+});
 export default app;
