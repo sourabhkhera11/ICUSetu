@@ -1,21 +1,52 @@
 // models/bedManagement.js
 import mongoose from "mongoose";
-import hospital from "./hospital.model.js";
 const bedSchema = new mongoose.Schema({
-  bedNumber: Number,
+  bedNumber: {
+    type: Number,
+    required: true,
+    unique: true,
+    min: 0,
+    max: 250,
+  },
   isOccupied: { type: Boolean, default: false },
   hasVentilator: { type: Boolean, default: false },
   patientDetails: {
-    name: String,
-    age: Number,
-    admittedAt: Date,
-    condition: String,
+    name: {
+      type: String,
+      trim: true,
+      minLength: 3,
+      maxLength: 35,
+    },
+    age: {
+      type: Number,
+      min: 0,
+      max: 150,
+    },
+    admittedAt: {
+      type: Date,
+      default: Date.now(),
+    },
+    condition: {
+      type: String,
+      enum: ["normal", "critical"],
+    },
   },
 });
 
 const floorSchema = new mongoose.Schema({
-  floorName: String,
-  totalBeds: Number,
+  floorName: {
+    type: String,
+    required: true,
+    trim: true,
+    minLength: 1,
+    maxLength: 15,
+  },
+  totalBeds: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 250,
+  },
   beds: [bedSchema],
 });
 
@@ -29,7 +60,7 @@ const bedManagementSchema = new mongoose.Schema({
   floors: [floorSchema],
   lastUpdated: {
     type: Date,
-    default: null,
+    default: Date.now(),
   },
 });
 
