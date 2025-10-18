@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import validator from "validator";
 //creating admin schema
 const adminSchema = new mongoose.Schema({
   email: {
@@ -10,12 +10,22 @@ const adminSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     lowercase: true,
-    minLength: [6, `Email must be atleast 6 character long!`],
-    maxLength: [50, `Email must not be longer than 50 character!`],
+    validate(value) {
+      if (!validator.isEmail(value)) {
+        throw new Error("Not a valid Email!");
+      }
+    },
   },
   password: {
     type: String,
     select: false,
+    minLength: 8,
+    maxLength: 500,
+    validate(value) {
+      if (!validator.isHash(value)) {
+        throw new Error("Not a valid password!");
+      }
+    },
   },
 });
 
