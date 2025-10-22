@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import validator, { trim } from "validator";
+import validator from "validator";
 /* Schema level validations 
 1)Must check for maximum and minimum such that no one can missuse the space of database my enter any length of data 
 2)Mongoose recognizes validate as a built-in option of a schema path. validate is a keyword whose parameter contain the value and is always executed before entring the value in the database

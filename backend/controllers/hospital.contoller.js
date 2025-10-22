@@ -1,24 +1,13 @@
 // controllers/hospitalController.js
-
 import hospitalModel from "../models/hospital.model.js";
 import BedManagement from "../models/bedManagement.js";
 import adminModel from "../models/admin.model.js";
-import { validationResult } from "express-validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cloudinary from "../config/cloudinary.js";
-/* import fs from "fs";
-import path from "path"; */
-
 // Register a new hospital
 export const registerHospital = async (req, res) => {
   try {
-    // Validate request
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
     const {
       hospitalName,
       email,
@@ -34,7 +23,6 @@ export const registerHospital = async (req, res) => {
       adminName,
       password,
     } = req.body;
-
     // Check if hospital already exists
     const existingHospital = await hospitalModel.findOne({
       $or: [
@@ -43,7 +31,6 @@ export const registerHospital = async (req, res) => {
         { registrationNumber },
         { licenseNumber },
         { hospitalName },
-        { adminName },
       ],
     });
 
