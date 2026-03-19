@@ -103,7 +103,7 @@ const HomePage = () => {
       {/* Header */}
       <header className="backdrop-blur-md bg-white/60 sticky top-0 z-50 shadow-md">
         <div className="max-w-7xl mx-auto flex justify-between items-center px-4 py-6">
-          <div className="text-4xl font-extrabold bg-gradient-to-r from-blue-600 via-purple-500 to-indigo-600 text-transparent bg-clip-text drop-shadow-md">
+          <div className="text-4xl font-extrabold bg-gradient-to-b from-gray-900 to-blue-500 text-transparent bg-clip-text drop-shadow-md">
             ICUSetu
           </div>
 
